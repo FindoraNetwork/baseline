@@ -3,4 +3,5 @@ members = [
     "baseline",
     "macros",
     "runtime",
+    "bs3",
 ]

@@ -1,4 +1,4 @@
-use alloc::{vec::Vec, string::String};
+use alloc::{string::String, vec::Vec};
 
 pub struct Request {
     pub methods: String,
@@ -8,4 +8,3 @@ pub struct Request {
 pub struct Response {
     pub data: Vec<u8>,
 }
-

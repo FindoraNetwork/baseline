@@ -2,11 +2,7 @@ use crate::types;
 
 use super::Event;
 
-pub trait Context {
-    type Store: bs3::backend::Backend;
-
-    type Digest: digest::Digest;
-
+pub trait Runtime {
     type Task<T>;
 
     // Trigger event;
@@ -19,9 +15,7 @@ pub trait Context {
     fn consensus(&self) -> &types::Consensus;
     // Get Governance info.
     fn governance(&self) -> &types::Governance;
-}
 
-pub trait ContextMut: Context {
     fn consensus_mut(&mut self) -> &mut types::Consensus;
 
     fn governance_mut(&mut self) -> &mut types::Governance;

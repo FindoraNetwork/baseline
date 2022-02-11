@@ -1,4 +1,5 @@
 #![no_std]
+#![feature(generic_associated_types)]
 
 extern crate alloc;
 
@@ -6,4 +7,10 @@ pub mod prelude;
 
 pub mod types;
 
-pub mod error;
+mod error;
+pub use error::*;
+
+pub mod context;
+
+mod metadata;
+pub use metadata::*;

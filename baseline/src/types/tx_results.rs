@@ -1,4 +1,4 @@
-use alloc::{vec::Vec, string::String};
+use alloc::{string::String, vec::Vec};
 
 #[derive(Debug, Default, Clone)]
 pub struct ExecResult {
@@ -11,5 +11,5 @@ pub struct ExecResult {
 
 #[derive(Debug, Default, Clone)]
 pub struct ExecResults {
-    pub results: Vec<ExecResult>
+    pub results: Vec<ExecResult>,
 }

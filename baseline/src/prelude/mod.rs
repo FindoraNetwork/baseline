@@ -15,3 +15,12 @@ pub use transaction::*;
 
 mod rpc;
 pub use rpc::*;
+
+mod runtime;
+pub use runtime::*;
+
+mod module;
+pub use module::*;
+
+mod metadata;
+pub use metadata::*;

@@ -2,12 +2,12 @@ use async_trait::async_trait;
 
 use crate::{error::MempoolResult, types::CheckResponse};
 
-use super::{Transaction, OriginTransaction};
+use super::{Module, OriginTransaction, Transaction};
 
 use alloc::boxed::Box;
 
 #[async_trait]
-pub trait Mempool {
+pub trait Mempool: Module {
     type Transaction: Transaction;
 
     type OriginTransaction: OriginTransaction;
