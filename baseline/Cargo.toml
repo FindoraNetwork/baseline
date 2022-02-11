@@ -11,3 +11,4 @@ bs3 = { path = "../bs3" }
 digest = "0.10.2"
 async-trait = "0.1.52"
 
+baseline-macros = { path = "../macros" }

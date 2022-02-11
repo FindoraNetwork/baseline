@@ -22,4 +22,3 @@ pub trait KeyEnDe: KeyEn + KeyDe {
         <Self as KeyDe>::decode_key(bytes)
     }
 }
-

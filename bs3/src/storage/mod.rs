@@ -1,4 +1,4 @@
-use crate::{prelude::Model, backend::Backend};
+use crate::{backend::Backend, prelude::Model};
 
 pub struct Storage<V: Model, M, B: Backend> {
     pub value: V,

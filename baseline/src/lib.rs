@@ -17,3 +17,4 @@ pub use metadata::*;
 
 pub use bs3;
 
+pub use baseline_macros::*;

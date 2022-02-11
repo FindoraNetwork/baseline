@@ -8,4 +8,3 @@ pub struct Map<K, V> {
 }
 
 impl<K, V> Model for Map<K, V> {}
-

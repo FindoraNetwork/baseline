@@ -2,7 +2,4 @@ use crate::Merkle;
 
 pub struct EmptyMerkle {}
 
-impl Merkle for EmptyMerkle {
-
-}
-
+impl Merkle for EmptyMerkle {}

@@ -1,7 +1,12 @@
-use baseline::{prelude::Context, Metadata, bs3::{Map, merkle::AppendOnlyMerkle}};
-use baseline_macros::module;
+use async_trait::async_trait;
+use baseline::{
+    bs3::{merkle::AppendOnlyMerkle, Map},
+    prelude::{Block, Context, ContextMut, Mempool},
+    types::ExecResults,
+    BlockResult, Metadata, RpcResult,
+};
 
-#[module]
+#[baseline::module]
 pub struct Mock2Module<C: Context> {
     #[context]
     ctx: C,
@@ -10,7 +15,7 @@ pub struct Mock2Module<C: Context> {
     pub metadata: Metadata,
 }
 
-#[module]
+#[baseline::module]
 pub struct MockModule<C: Context> {
     #[context]
     ctx: C,
@@ -28,16 +33,33 @@ pub struct MockModule<C: Context> {
     pub mock2: Mock2Module<C>,
 }
 
-// impl<C: Context> MockModule<C> {
-    // fn new() -> Self {
-    //     use baseline::prelude::ModuleMetadata;
-    //
-    //     let metadata = Self::metadata();
-    //
-    //     Self {
-    //         metadata,
-    //     }
-    // }
-// }
+impl<C: Context> Mempool for MockModule<C> {
+    type Transaction = ();
+
+    type OriginTransaction = ();
+}
+
+#[async_trait]
+impl<C: Context> Block for MockModule<C> {
+    async fn apply_txs(&mut self, _tx: &[Self::Transaction]) -> BlockResult<ExecResults>
+    where
+        Self::Context: ContextMut,
+    {
+        let _s = self.ctx.consensus_mut();
+
+        Ok(Default::default())
+    }
+}
+
+#[baseline::rpc]
+impl<C: Context> MockModule<C> {
+    pub async fn call_method(&mut self, _params: i64) -> RpcResult<i64> {
+        Ok(1)
+    }
+
+    pub async fn chain_id(&mut self) -> RpcResult<i64> {
+        Ok(1)
+    }
+}
 
 fn main() {}

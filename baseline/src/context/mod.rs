@@ -10,9 +10,9 @@ pub struct Context<B, D, R> {
 
 impl<B, D, R> prelude::Context for Context<B, D, R>
 where
-    B: bs3::backend::Backend,
-    D: digest::Digest,
-    R: prelude::Runtime,
+    B: bs3::backend::Backend + Send,
+    D: digest::Digest + Send,
+    R: prelude::Runtime + Send,
 {
     type Store = B;
 
@@ -40,6 +40,3 @@ where
         self.runtime.block()
     }
 }
-
-
-

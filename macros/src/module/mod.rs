@@ -1,7 +1,7 @@
 mod ctx;
+mod default;
 mod metadata;
 mod storage;
-mod default;
 
 use proc_macro::TokenStream;
 use proc_macro2::Span;
@@ -56,7 +56,8 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
         }
     }
 
-    let metadata_name = metadata_name.ok_or(Error::new(Span::call_site(), "metadata must be defined"))?;
+    let metadata_name =
+        metadata_name.ok_or(Error::new(Span::call_site(), "metadata must be defined"))?;
 
     default::impl_default(metadata_name, &parsed)?;
 

@@ -2,8 +2,8 @@ use crate::types;
 
 use super::Event;
 
-pub trait Context {
-    type Store: bs3::backend::Backend;
+pub trait Context: Send {
+    type Store: bs3::backend::Backend + Send;
 
     type Digest: digest::Digest;
 
