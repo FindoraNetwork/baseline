@@ -23,4 +23,3 @@ mod tx_results;
 pub use tx_results::*;
 
 pub mod rpc;
-

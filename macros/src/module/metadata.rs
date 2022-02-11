@@ -1,5 +1,7 @@
 use proc_macro2::Span;
-use syn::{parse_quote, Generics, Ident, Item, ItemImpl, Attribute, Meta, NestedMeta, Result, Error};
+use syn::{
+    parse_quote, Attribute, Error, Generics, Ident, Item, ItemImpl, Meta, NestedMeta, Result,
+};
 
 use crate::utils::generics_to_ident_list;
 
@@ -17,7 +19,11 @@ pub fn impl_metadata(attr: Attribute, ident: &Ident, generics: &Generics) -> Res
         for meta in v.nested {
             if let NestedMeta::Meta(v) = meta {
                 if let Meta::NameValue(n) = v {
-                    let key = n.path.get_ident().ok_or(Error::new(Span::call_site(), "get name error"))?.to_string();
+                    let key = n
+                        .path
+                        .get_ident()
+                        .ok_or(Error::new(Span::call_site(), "get name error"))?
+                        .to_string();
                     match key.as_str() {
                         "name" => name = Some(n.lit),
                         "version" => version = Some(n.lit),

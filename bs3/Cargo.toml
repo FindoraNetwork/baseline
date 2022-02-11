@@ -9,3 +9,5 @@ edition = "2021"
 bs3 = { git = "https://github.com/tiannian/bs3.git" }
 digest = "0.10.2"
 
+# serde = { version = "1.0", default-features = false, features = ["derive"] }
+

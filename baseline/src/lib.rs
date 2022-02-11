@@ -14,3 +14,6 @@ pub mod context;
 
 mod metadata;
 pub use metadata::*;
+
+pub use bs3;
+

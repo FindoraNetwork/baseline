@@ -1,3 +1,1 @@
-pub trait Backend: Sized + Clone {
-
-}
+pub trait Backend: Sized + Clone {}

@@ -1,8 +1,8 @@
-use syn::{parse_quote, Field, Generics, Ident, Item, ItemImpl, Type};
+use syn::{parse_quote, Field, Generics, Ident, Item, ItemImpl};
 
 use crate::utils::generics_to_ident_list;
 
-pub fn impl_ctx(field: Field, ident: &Ident, generics: &Generics) -> (Item, Type) {
+pub fn impl_ctx(field: Field, ident: &Ident, generics: &Generics) -> Item {
     let type_ = field.ty;
     let field_name = field.ident;
 
@@ -20,5 +20,5 @@ pub fn impl_ctx(field: Field, ident: &Ident, generics: &Generics) -> (Item, Type
 
     impl_.generics = generics.clone();
 
-    (Item::Impl(impl_), type_)
+    Item::Impl(impl_)
 }
