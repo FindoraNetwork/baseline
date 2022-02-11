@@ -3,7 +3,7 @@ use core::marker::PhantomData;
 use crate::{prelude, types};
 
 pub struct Context<B, D, R> {
-    backend: B,
+    pub backend: B,
     marker_d: PhantomData<D>,
     runtime: R,
 }

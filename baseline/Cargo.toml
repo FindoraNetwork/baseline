@@ -12,3 +12,11 @@ digest = "0.10.2"
 async-trait = "0.1.52"
 
 baseline-macros = { path = "../macros" }
+
+# for RPC.
+serde = { version = "1.0", default-features = false, features = ["derive"], optional = true }
+serde_json = { version = "1.0", default-features = false, features = ["alloc"], optional = true }
+
+[features]
+default = ["json"]
+json = ["serde", "serde_json"]

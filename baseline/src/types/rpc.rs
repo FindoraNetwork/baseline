@@ -6,5 +6,7 @@ pub struct Request {
 }
 
 pub struct Response {
+    pub code: i64,
+    pub message: String,
     pub data: Vec<u8>,
 }
