@@ -9,5 +9,12 @@ edition = "2021"
 bs3 = { git = "https://github.com/tiannian/bs3.git" }
 digest = "0.10.2"
 
-# serde = { version = "1.0", default-features = false, features = ["derive"] }
+# For vsdb and sha3
+vsdb = { version = "0.14", optional = true }
+sha3 = { version = "0.10", optional = true }
+
+[features]
+default = ["vsdb-backend"]
+
+vsdb-backend = ["vsdb"]
 

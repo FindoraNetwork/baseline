@@ -1,7 +1,53 @@
-use crate::{backend::Backend, prelude::Model};
+use crate::{
+    backend::Backend,
+    prelude::{Forkable, Model, Versionable},
+    BranchName, Merkle, Result,
+};
 
-pub struct Storage<V: Model, M, B: Backend> {
+pub struct Storage<V, M, B> {
+    pub branch_name: BranchName,
     pub value: V,
     pub merkle: M,
     pub backend: B,
+}
+
+// TODO: Empty impl for more backend.
+impl<V, M, B> Forkable for Storage<V, M, B>
+where
+    V: Model,
+    B: Backend,
+    M: Merkle,
+{
+    fn fork(&self, target: &[u8]) -> Result<Self> {
+        let backend = self.backend.clone();
+
+        backend.fork(target)?;
+
+        Ok(Self {
+            branch_name: BranchName(target.to_vec()),
+            value: self.value.clone(),
+            merkle: self.merkle.clone(),
+            backend,
+        })
+    }
+
+    fn merge(&self, branch: Self) -> Result<()> {
+        self.backend.merge(branch.backend)?;
+        Ok(())
+    }
+}
+
+impl<V, M, B> Versionable for Storage<V, M, B>
+where
+    V: Model,
+    B: Backend,
+    M: Merkle,
+{
+    fn commit(&self, name: &[u8]) -> Result<()> {
+        self.backend.commit(name)
+    }
+
+    fn pop(&self) -> Result<()> {
+        self.backend.pop()
+    }
 }

@@ -17,3 +17,6 @@ pub use storage::*;
 
 pub mod merkle;
 pub use merkle::*;
+
+mod types;
+pub use types::*;
