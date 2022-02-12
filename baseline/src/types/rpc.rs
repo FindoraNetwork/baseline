@@ -3,7 +3,7 @@ use alloc::{string::String, vec::Vec};
 use crate::RpcError;
 
 pub struct Request {
-    pub methods: String,
+    pub method: String,
     pub params: Vec<u8>,
 }
 

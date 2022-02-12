@@ -1,4 +1,4 @@
-use alloc::{string::String, vec::Vec};
+use alloc::{string::String, vec::Vec, boxed::Box};
 use async_trait::async_trait;
 
 use crate::{error::RpcResult, types::rpc};
@@ -7,7 +7,7 @@ use super::Module;
 
 #[async_trait]
 pub trait RPC: Module {
-    fn call(&mut self, req: rpc::Request) -> rpc::Response;
+    async fn call(&mut self, req: rpc::Request) -> rpc::Response;
 }
 
 pub trait Requester: Sized {
@@ -38,6 +38,12 @@ impl<const N: usize> Requester for [u8; N] {
 
 pub trait Responder {
     fn response(self) -> RpcResult<rpc::Response>;
+}
+
+impl Responder for rpc::Response {
+    fn response(self) -> RpcResult<rpc::Response> {
+        Ok(self)
+    }
 }
 
 impl Responder for String {
