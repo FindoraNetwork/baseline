@@ -17,20 +17,18 @@ pub fn impl_metadata(attr: Attribute, ident: &Ident, generics: &Generics) -> Res
 
     if let Meta::List(v) = args {
         for meta in v.nested {
-            if let NestedMeta::Meta(v) = meta {
-                if let Meta::NameValue(n) = v {
-                    let key = n
-                        .path
-                        .get_ident()
-                        .ok_or(Error::new(Span::call_site(), "get name error"))?
-                        .to_string();
-                    match key.as_str() {
-                        "name" => name = Some(n.lit),
-                        "version" => version = Some(n.lit),
-                        "impl_version" => impl_version = Some(n.lit),
-                        "target_height" => target_height = Some(n.lit),
-                        _ => return Err(Error::new(Span::call_site(), "Unexpected key")),
-                    }
+            if let NestedMeta::Meta(Meta::NameValue(n)) = meta {
+                let key = n
+                    .path
+                    .get_ident()
+                    .ok_or_else(|| Error::new(Span::call_site(), "get name error"))?
+                    .to_string();
+                match key.as_str() {
+                    "name" => name = Some(n.lit),
+                    "version" => version = Some(n.lit),
+                    "impl_version" => impl_version = Some(n.lit),
+                    "target_height" => target_height = Some(n.lit),
+                    _ => return Err(Error::new(Span::call_site(), "Unexpected key")),
                 }
             }
         }

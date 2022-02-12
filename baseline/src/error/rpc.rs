@@ -1,4 +1,4 @@
-use alloc::{string::String, vec::Vec, format};
+use alloc::{format, string::String, vec::Vec};
 
 use crate::types::rpc;
 

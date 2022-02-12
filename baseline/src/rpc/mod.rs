@@ -4,12 +4,12 @@ mod json;
 pub use json::*;
 
 pub mod helpers {
-    use crate::{RpcResult, types::rpc::Response, prelude::Responder};
+    use crate::{prelude::Responder, types::rpc::Response, RpcResult};
 
     pub fn to_response(r: RpcResult<Response>) -> Response {
         match r {
             Ok(r) => r,
-            Err(e) => e.to_response()
+            Err(e) => e.to_response(),
         }
     }
 
@@ -17,4 +17,3 @@ pub mod helpers {
         r.map(|t| to_response(t.response()))
     }
 }
-

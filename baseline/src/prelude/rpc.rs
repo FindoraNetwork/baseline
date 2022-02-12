@@ -1,4 +1,4 @@
-use alloc::{string::String, vec::Vec, boxed::Box};
+use alloc::{boxed::Box, string::String, vec::Vec};
 use async_trait::async_trait;
 
 use crate::{error::RpcResult, types::rpc};
@@ -71,4 +71,3 @@ impl<const N: usize> Responder for [u8; N] {
         Ok(rpc::Response::new(self.to_vec()))
     }
 }
-

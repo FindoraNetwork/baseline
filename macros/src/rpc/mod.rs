@@ -1,11 +1,18 @@
+use core::mem;
 use proc_macro::TokenStream;
 use proc_macro2::Span;
 use quote::quote;
-use syn::{parse_macro_input, Result, ItemImpl, ImplItem, Error, Meta, Path, parse_quote, LitStr, MetaList, NestedMeta, Lit, Signature, Block};
-use core::mem;
+use syn::{
+    parse_macro_input, parse_quote, Block, Error, ImplItem, ItemImpl, Lit, LitStr, Meta, MetaList,
+    NestedMeta, Path, Result, Signature,
+};
 
 fn check_path_rpc(path: &Path) -> Result<()> {
-    if path.get_ident().ok_or(Error::new(Span::call_site(), "get ident error"))?.to_string() == "rpc" {
+    if *path
+        .get_ident()
+        .ok_or_else(|| Error::new(Span::call_site(), "get ident error"))?
+        == "rpc"
+    {
         Ok(())
     } else {
         Err(Error::new(Span::call_site(), "rpc attr must be rpc"))
@@ -13,12 +20,21 @@ fn check_path_rpc(path: &Path) -> Result<()> {
 }
 
 fn parse_rpc_meta_name(ml: MetaList) -> Result<Lit> {
-    let fm = ml.nested.first().ok_or(Error::new(Span::call_site(), "no name for rpc"))?;
+    let fm = ml
+        .nested
+        .first()
+        .ok_or_else(|| Error::new(Span::call_site(), "no name for rpc"))?;
     if let NestedMeta::Meta(m) = fm {
         if let Meta::NameValue(m) = m {
-            match m.path.get_ident().ok_or(Error::new(Span::call_site(), "Muse be ident"))?.to_string().as_str() {
+            match m
+                .path
+                .get_ident()
+                .ok_or_else(|| Error::new(Span::call_site(), "Muse be ident"))?
+                .to_string()
+                .as_str()
+            {
                 "name" => Ok(m.lit.clone()),
-                _ => Err(Error::new(Span::call_site(), "Only support name"))
+                _ => Err(Error::new(Span::call_site(), "Only support name")),
             }
         } else {
             Err(Error::new(Span::call_site(), "expect meta name value"))
@@ -44,7 +60,6 @@ fn build_call(sig: &Signature) -> Result<Block> {
             baseline::rpc::helpers::to_response(r)
         }))
     } else if arg_len == 2 {
-
         Ok(parse_quote!( {
             match baseline::prelude::Requester::request(req) {
                 Ok(e) => {
@@ -59,12 +74,14 @@ fn build_call(sig: &Signature) -> Result<Block> {
 
         }))
     } else {
-        Err(Error::new(Span::call_site(), "format error for rpc siganture"))
+        Err(Error::new(
+            Span::call_site(),
+            "format error for rpc siganture",
+        ))
     }
 }
 
 pub fn _main(mut input: ItemImpl) -> Result<TokenStream> {
-
     let mut method_names = Vec::new();
     let mut call_bodys = Vec::new();
 
@@ -85,7 +102,7 @@ pub fn _main(mut input: ItemImpl) -> Result<TokenStream> {
                         let call_body = build_call(&m.sig)?;
 
                         call_bodys.push(call_body);
-                    },
+                    }
                     Meta::List(l) => {
                         check_path_rpc(&l.path)?;
                         let method_name = parse_rpc_meta_name(l)?;
@@ -95,8 +112,8 @@ pub fn _main(mut input: ItemImpl) -> Result<TokenStream> {
                         let call_body = build_call(&m.sig)?;
 
                         call_bodys.push(call_body);
-                    },
-                    _ => return Err(Error::new(Span::call_site(), "format error."))
+                    }
+                    _ => return Err(Error::new(Span::call_site(), "format error.")),
                 }
             }
         }

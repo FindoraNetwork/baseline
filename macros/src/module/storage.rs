@@ -12,15 +12,15 @@ pub fn impl_storage(ty: Type, field: &mut Field, attr: Attribute) -> Result<()> 
             let n = l
                 .nested
                 .first()
-                .ok_or(Error::new(Span::call_site(), "Internal error."))?;
+                .ok_or_else(|| Error::new(Span::call_site(), "Internal error."))?;
             if let NestedMeta::Meta(m) = n {
                 if let Meta::NameValue(v) = m {
                     let name = v
                         .path
                         .get_ident()
-                        .ok_or(Error::new(Span::call_site(), "Must set key"))?;
+                        .ok_or_else(|| Error::new(Span::call_site(), "Must set key"))?;
 
-                    if name.to_string() == "merkle" {
+                    if *name == "merkle" {
                         if let Lit::Str(s) = &v.lit {
                             s.parse()?
                         } else {

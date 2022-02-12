@@ -25,7 +25,7 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
                 let path = attr
                     .path
                     .get_ident()
-                    .ok_or(Error::new(Span::call_site(), "read attr failed."))?
+                    .ok_or_else(|| Error::new(Span::call_site(), "read attr failed."))?
                     .to_string();
 
                 match path.as_str() {
@@ -42,10 +42,9 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
                         outer_impls.push(item);
                     }
                     "storage" => {
-                        let ty = ctx_type.clone().ok_or(Error::new(
-                            Span::call_site(),
-                            "Context must be set first than storage",
-                        ))?;
+                        let ty = ctx_type.clone().ok_or_else(|| {
+                            Error::new(Span::call_site(), "Context must be set first than storage")
+                        })?;
 
                         storage::impl_storage(ty, field, attr)?;
                     }
@@ -57,7 +56,7 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     }
 
     let metadata_name =
-        metadata_name.ok_or(Error::new(Span::call_site(), "metadata must be defined"))?;
+        metadata_name.ok_or_else(|| Error::new(Span::call_site(), "metadata must be defined"))?;
 
     default::impl_default(metadata_name, &parsed)?;
 
