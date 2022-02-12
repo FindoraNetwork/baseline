@@ -1,6 +1,3 @@
-
-
-use alloc::string::String;
 use serde::{Deserialize, Serialize};
 
 use crate::{prelude::{Requester, Responder}, types, RpcResult};
@@ -16,7 +13,7 @@ impl<T> Json<T> {
 impl<T> Requester for Json<T>
 where T: for<'de> Deserialize<'de>,
 {
-    fn request(req: &types::rpc::Request) -> RpcResult<Self> {
+    fn request(req: types::rpc::Request) -> RpcResult<Self> {
         let r = serde_json::from_slice(&req.params)?;
         Ok(Self(r))
     }
@@ -27,11 +24,7 @@ where T: Serialize, {
     fn response(self) -> RpcResult<types::rpc::Response> {
         let r = serde_json::to_vec(&self.0)?;
 
-        let resp = types::rpc::Response {
-            code: 0,
-            message: String::from("success"),
-            data: r,
-        };
+        let resp = types::rpc::Response::new(r);
 
         Ok(resp)
     }
@@ -44,11 +37,7 @@ where T: Serialize,
         match self {
             Ok(e) => {e.response()},
             Err(e) => {
-                Ok(types::rpc::Response {
-                    code: e.code,
-                    message: e.message,
-                    data: e.data,
-                })
+                Ok(e.to_response())
             }
         }
     }

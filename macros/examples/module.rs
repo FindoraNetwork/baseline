@@ -53,10 +53,12 @@ impl<C: Context> Block for MockModule<C> {
 
 #[baseline::rpc]
 impl<C: Context> MockModule<C> {
+    #[rpc(name = "call")]
     pub async fn call_method(&mut self, _params: i64) -> RpcResult<i64> {
         Ok(1)
     }
 
+    #[rpc]
     pub async fn chain_id(&mut self) -> RpcResult<i64> {
         Ok(1)
     }
