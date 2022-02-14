@@ -39,4 +39,8 @@ where
     fn block(&self) -> &types::Blocks {
         self.runtime.block()
     }
+
+    fn mempool(&self) -> &types::Mempool {
+        self.runtime.mempool()
+    }
 }

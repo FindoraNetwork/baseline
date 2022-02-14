@@ -19,6 +19,8 @@ pub trait Context: Send {
     fn consensus(&self) -> &types::Consensus;
     // Get Governance info.
     fn governance(&self) -> &types::Governance;
+
+    fn mempool(&self) -> &types::Mempool;
 }
 
 pub trait ContextMut: Context {

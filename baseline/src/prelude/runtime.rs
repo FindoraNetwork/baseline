@@ -16,6 +16,8 @@ pub trait Runtime {
     // Get Governance info.
     fn governance(&self) -> &types::Governance;
 
+    fn mempool(&self) -> &types::Mempool;
+
     fn consensus_mut(&mut self) -> &mut types::Consensus;
 
     fn governance_mut(&mut self) -> &mut types::Governance;
