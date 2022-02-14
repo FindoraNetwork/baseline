@@ -4,5 +4,6 @@ members = [
     "macros",
     "runtime",
     "bs3",
-    "rt-tendermint"
+    "rt-tendermint",
+    "rt-memory",
 ]

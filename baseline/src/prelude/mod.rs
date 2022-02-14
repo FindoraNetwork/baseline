@@ -24,3 +24,9 @@ pub use module::*;
 
 mod metadata;
 pub use metadata::*;
+
+mod manager;
+pub use manager::*;
+
+mod genesis;
+pub use genesis::*;
