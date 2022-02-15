@@ -8,7 +8,7 @@ use alloc::boxed::Box;
 
 #[async_trait]
 pub trait Mempool: Module {
-    type Transaction: Transaction;
+    type Transaction: Transaction + 'static;
 
     type OriginTransaction: OriginTransaction;
 

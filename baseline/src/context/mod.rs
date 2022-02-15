@@ -10,9 +10,9 @@ pub struct Context<B, D, R> {
 
 impl<B, D, R> prelude::Context for Context<B, D, R>
 where
-    B: bs3::backend::Backend + Send,
-    D: digest::Digest + Send,
-    R: prelude::Runtime + Send,
+    B: bs3::backend::Backend + Send + Sync,
+    D: digest::Digest + Send + Sync,
+    R: prelude::Runtime + Send + Sync,
 {
     type Store = B;
 

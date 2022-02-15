@@ -1,6 +1,6 @@
 use super::Context;
 
-pub trait Module {
+pub trait Module: Send + Sync + 'static{
     type Context: Context;
 
     fn set_ctx(&mut self, context: Self::Context);

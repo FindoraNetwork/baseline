@@ -1,7 +1,12 @@
+use async_trait::async_trait;
+
 use super::{ContextMut, Module};
 
+use alloc::boxed::Box;
+
+#[async_trait]
 pub trait Genesis: Module {
-    fn genesis(&mut self)
+    async fn genesis(&mut self)
     where
         Self::Context: ContextMut,
     {

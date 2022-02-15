@@ -8,3 +8,14 @@ edition = "2021"
 [dependencies]
 baseline = { path = "../baseline" }
 
+async-trait = "0.1.52"
+futures-utils-lite = "0.1.0"
+
+# smol backend
+smol = { version = "1.2.5", optional = true }
+
+[features]
+default = ["smol_backend"]
+smol_backend = ["smol"]
+
+

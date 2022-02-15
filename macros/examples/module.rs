@@ -1,9 +1,9 @@
 use async_trait::async_trait;
 use baseline::{
     bs3::{merkle::AppendOnlyMerkle, Map},
-    prelude::{Block, Context, ContextMut, Mempool},
+    prelude::{Block, Context, ContextMut, Mempool, Genesis},
     types::ExecResults,
-    BlockResult, Metadata, RpcResult,
+    Metadata, RpcResult,
 };
 
 #[baseline::module]
@@ -33,6 +33,15 @@ pub struct MockModule<C: Context> {
     pub mock2: Mock2Module<C>,
 }
 
+#[async_trait]
+impl<C: Context> Genesis for MockModule<C> {
+    async fn genesis(&mut self)
+    where
+            Self::Context: ContextMut, {
+
+    }
+}
+
 impl<C: Context> Mempool for MockModule<C> {
     type Transaction = ();
 
@@ -41,13 +50,13 @@ impl<C: Context> Mempool for MockModule<C> {
 
 #[async_trait]
 impl<C: Context> Block for MockModule<C> {
-    async fn apply_txs(&mut self, _tx: &[Self::Transaction]) -> BlockResult<ExecResults>
+    async fn apply_txs(&mut self, _tx: &[Self::Transaction]) -> ExecResults
     where
         Self::Context: ContextMut,
     {
         let _s = self.ctx.consensus_mut();
 
-        Ok(Default::default())
+        Default::default()
     }
 }
 
