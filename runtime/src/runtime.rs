@@ -1,16 +1,33 @@
-use baseline::prelude::Manager;
+use std::marker::PhantomData;
 
-use crate::ConsensusCtl;
+use baseline::prelude::{ContextMut, Manager};
 
-pub struct Runtime<M: Manager, C: ConsensusCtl> {
-    pub manager: M,
-    pub consensus: C,
+use crate::{ConsensusCtl, ConsensusRuntime};
+
+pub struct Runtime<M, C> {
+    pub consensus: Option<C>,
+    pub marker: PhantomData<M>,
 }
 
-impl<M: Manager, C: ConsensusCtl> Runtime<M, C> {
+impl<M, C> Runtime<M, C>
+where
+    M: Manager,
+    M::Context: ContextMut,
+    C: ConsensusCtl<ConsensusRuntime<M>>,
+{
+    pub fn app(&mut self, app: M) {
+        if let Some(consensus) = &mut self.consensus {
+            consensus.set_app(ConsensusRuntime::new(app.clone()));
+        }
+    }
+
+    pub fn consensus(&mut self, c: C) {
+        self.consensus = Some(c);
+    }
+
     pub fn start(self) {}
 
-    pub fn step_block(&self, _txs: Vec<Vec<u8>>) {}
-
-    pub fn rollback_block(&self) {}
+    //     pub fn step_block(&self, _txs: Vec<Vec<u8>>) {}
+    //
+    //     pub fn rollback_block(&self) {}
 }

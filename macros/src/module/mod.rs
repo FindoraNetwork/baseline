@@ -1,3 +1,4 @@
+mod clone;
 mod ctx;
 mod default;
 mod metadata;
@@ -15,6 +16,7 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let mut outer_impls = Vec::new();
 
     let mut ctx_type = None;
+    let mut ctx_name = None;
     let mut metadata_name = None;
 
     if let Fields::Named(n) = &mut parsed.fields {
@@ -33,6 +35,7 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
                         let ctx = ctx::impl_ctx(field.clone(), &parsed.ident, &parsed.generics);
 
                         ctx_type = Some(field.ty.clone());
+                        ctx_name = field.ident.clone();
                         outer_impls.push(ctx);
                     }
                     "metadata" => {
@@ -58,10 +61,18 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let metadata_name =
         metadata_name.ok_or_else(|| Error::new(Span::call_site(), "metadata must be defined"))?;
 
-    default::impl_default(metadata_name, &parsed)?;
+    let ctx_name =
+        ctx_name.ok_or_else(|| Error::new(Span::call_site(), "context must be defined"))?;
+
+    let _default = default::impl_default(ctx_name.clone(), metadata_name.clone(), &parsed)?;
+    let _clone = clone::impl_clone(&parsed)?;
 
     let expand = quote! {
         #parsed
+
+        #_default
+
+        #_clone
 
         #(#outer_impls)*
     };

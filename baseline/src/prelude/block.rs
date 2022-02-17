@@ -1,8 +1,8 @@
 use async_trait::async_trait;
 
-use crate::{types::ExecResults};
+use crate::types::ExecResults;
 
-use super::{ContextMut, Mempool, Genesis};
+use super::{ContextMut, Genesis, Mempool};
 
 use alloc::boxed::Box;
 

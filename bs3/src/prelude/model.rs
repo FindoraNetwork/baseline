@@ -1,1 +1,1 @@
-pub trait Model: Clone {}
+pub trait Model: Clone + Default {}

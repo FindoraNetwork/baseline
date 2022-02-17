@@ -4,11 +4,28 @@ use crate::{
     BranchName, Merkle, Result,
 };
 
+#[derive(Clone)]
 pub struct Storage<V, M, B> {
     pub branch_name: BranchName,
     pub value: V,
     pub merkle: M,
     pub backend: B,
+}
+
+impl<V, M, B> Storage<V, M, B>
+where
+    V: Model,
+    B: Backend,
+    M: Merkle,
+{
+    pub fn new(backend: B, merkle: M) -> Self {
+        Self {
+            branch_name: BranchName::from("main"),
+            value: V::default(),
+            merkle,
+            backend,
+        }
+    }
 }
 
 // TODO: Empty impl for more backend.

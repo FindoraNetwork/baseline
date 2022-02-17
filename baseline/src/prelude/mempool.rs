@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 
-use crate::{error::MempoolResult, types::CheckResponse};
+use crate::{error::Result, types::CheckResponse};
 
 use super::{Module, OriginTransaction, Transaction};
 
@@ -8,15 +8,15 @@ use alloc::boxed::Box;
 
 #[async_trait]
 pub trait Mempool: Module {
-    type Transaction: Transaction + 'static;
+    type Transaction: Transaction + Send + 'static;
 
-    type OriginTransaction: OriginTransaction;
+    type OriginTransaction: OriginTransaction + Send + 'static;
 
-    async fn check(&mut self, _tx: Self::Transaction) -> MempoolResult<CheckResponse> {
+    async fn check(&self, _tx: Self::Transaction) -> Result<CheckResponse> {
         Ok(Default::default())
     }
 
-    async fn validate(&mut self, _tx: Self::OriginTransaction) -> MempoolResult<Self::Transaction> {
+    async fn validate(&self, _tx: Self::OriginTransaction) -> Result<Self::Transaction> {
         Ok(Self::Transaction::default())
     }
 }

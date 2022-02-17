@@ -2,7 +2,7 @@ use crate::types;
 
 use super::Event;
 
-pub trait Context: Send + Sync {
+pub trait Context: Send + Sync + 'static + Clone {
     type Store: bs3::backend::Backend + Send + Sync;
 
     type Digest: digest::Digest;
@@ -27,4 +27,10 @@ pub trait ContextMut: Context {
     fn consensus_mut(&mut self) -> &mut types::Consensus;
 
     fn governance_mut(&mut self) -> &mut types::Governance;
+}
+
+pub trait ContextSetable: ContextMut {
+    fn store(&self) -> Self::Store;
+
+    fn digest(&self) -> Self::Digest;
 }

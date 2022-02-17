@@ -1,7 +1,7 @@
 use async_trait::async_trait;
 use baseline::{
     bs3::{merkle::AppendOnlyMerkle, Map},
-    prelude::{Block, Context, ContextMut, Mempool, Genesis},
+    prelude::{Block, Context, ContextMut, Genesis, Mempool},
     types::ExecResults,
     Metadata, RpcResult,
 };
@@ -29,16 +29,16 @@ pub struct MockModule<C: Context> {
     #[storage(merkle = "AppendOnlyMerkle")]
     pub merkle_value: Map<i64, i64>,
 
-    #[dependence]
-    pub mock2: Mock2Module<C>,
+//     #[dependence]
+//     pub mock2: Mock2Module<C>,
 }
 
 #[async_trait]
 impl<C: Context> Genesis for MockModule<C> {
     async fn genesis(&mut self)
     where
-            Self::Context: ContextMut, {
-
+        Self::Context: ContextMut,
+    {
     }
 }
 
