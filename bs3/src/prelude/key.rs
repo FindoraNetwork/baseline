@@ -22,3 +22,18 @@ pub trait KeyEnDe: KeyEn + KeyDe {
         <Self as KeyDe>::decode_key(bytes)
     }
 }
+
+impl KeyEn for Vec<u8> {
+    fn encode_key(&self) -> Vec<u8> {
+        self.clone()
+    }
+}
+
+impl KeyDe for Vec<u8> {
+    fn decode_key(bytes: &[u8]) -> Result<Self> {
+        Ok(bytes.to_vec())
+    }
+}
+
+impl KeyEnDe for Vec<u8> {}
+

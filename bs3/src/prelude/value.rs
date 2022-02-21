@@ -23,3 +23,18 @@ pub trait ValueEnDe: ValueEn + ValueDe {
         <Self as ValueDe>::decode_value(bytes)
     }
 }
+
+impl ValueEn for Vec<u8> {
+    fn encode_value(&self) -> Vec<u8> {
+        self.clone()
+    }
+}
+
+impl ValueDe for Vec<u8> {
+    fn decode_value(bytes: &[u8]) -> Result<Self> {
+        Ok(bytes.to_vec())
+    }
+}
+
+impl ValueEnDe for Vec<u8> {}
+

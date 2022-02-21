@@ -13,7 +13,7 @@ pub fn impl_ctx(field: Field, ident: &Ident, generics: &Generics) -> Item {
             type Context = #type_;
 
             fn set_ctx(&mut self, context: Self::Context) {
-                let _ = core::mem::replace(&mut self.#field_name, context);
+                self.#field_name = context;
             }
         }
     };

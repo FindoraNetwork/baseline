@@ -1,6 +1,27 @@
-use crate::Merkle;
+use core::marker::PhantomData;
 
-#[derive(Clone, Default)]
-pub struct EmptyMerkle {}
+use digest::Digest;
 
-impl Merkle for EmptyMerkle {}
+use crate::prelude::Merkle;
+
+pub struct EmptyMerkle<D> {
+    marker: PhantomData<D>,
+}
+
+impl<D: Digest> Clone for EmptyMerkle<D> {
+    fn clone(&self) -> Self {
+        Self {
+            marker: PhantomData,
+        }
+    }
+}
+
+impl<D: Digest + Sync + Send> Merkle for EmptyMerkle<D> {
+    type Digest = D;
+
+    fn new(_digest: D) -> Self {
+        Self {
+            marker: PhantomData,
+        }
+    }
+}

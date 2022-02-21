@@ -5,7 +5,7 @@ use super::Event;
 pub trait Context: Send + Sync + 'static + Clone {
     type Store: bs3::backend::Backend + Send + Sync;
 
-    type Digest: digest::Digest;
+    type Digest: digest::Digest + Send + Sync;
 
     type Task<T>;
 

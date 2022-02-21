@@ -10,7 +10,7 @@ use quote::quote;
 use syn::{parse_macro_input, Error, Fields, ItemStruct, Result};
 
 use core::panic;
-use std::mem;
+use std::{mem, collections::BTreeSet};
 
 pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let mut outer_impls = Vec::new();
@@ -18,6 +18,8 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let mut ctx_type = None;
     let mut ctx_name = None;
     let mut metadata_name = None;
+
+    let mut storage_names = BTreeSet::new();
 
     if let Fields::Named(n) = &mut parsed.fields {
         for field in &mut n.named {
@@ -50,6 +52,8 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
                         })?;
 
                         storage::impl_storage(ty, field, attr)?;
+
+                        storage_names.insert(field.ident.clone());
                     }
                     "dependence" => {}
                     _ => panic!("no {} support, pleasr remove it", path),
@@ -64,7 +68,7 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let ctx_name =
         ctx_name.ok_or_else(|| Error::new(Span::call_site(), "context must be defined"))?;
 
-    let _default = default::impl_default(ctx_name.clone(), metadata_name.clone(), &parsed)?;
+    let _default = default::impl_default(ctx_name.clone(), metadata_name.clone(), &storage_names, &parsed)?;
     let _clone = clone::impl_clone(&parsed)?;
 
     let expand = quote! {

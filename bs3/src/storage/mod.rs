@@ -1,7 +1,7 @@
 use crate::{
     backend::Backend,
-    prelude::{Forkable, Model, Versionable},
-    BranchName, Merkle, Result,
+    prelude::{Forkable, Model, Versionable, Merkle},
+    BranchName, Result,
 };
 
 #[derive(Clone)]

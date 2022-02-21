@@ -30,5 +30,15 @@ pub fn impl_clone(st: &ItemStruct) -> Result<Item> {
 
     res.generics = st.generics.clone();
 
+//     for item in res.generics.params.iter_mut() {
+    //     if let GenericParam::Type(t) = item {
+    //         if let Type::Path(p) = ctx_type {
+    //             if Some(&t.ident) == p.path.get_ident() {
+    //                 t.bounds.push(parse_quote!(baseline::prelude::ContextSetable))
+    //             }
+    //         }
+    //     }
+    // }
+//
     Ok(Item::Impl(res))
 }

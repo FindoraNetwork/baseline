@@ -9,3 +9,6 @@ pub use model::*;
 
 mod management;
 pub use management::*;
+
+mod merkle;
+pub use merkle::*;

@@ -24,10 +24,10 @@ pub struct MockModule<C: Context> {
     pub metadata: Metadata,
 
     #[storage]
-    pub value: Map<i64, i64>,
+    pub value: Map<Vec<u8>, Vec<u8>>,
 
     #[storage(merkle = "AppendOnlyMerkle")]
-    pub merkle_value: Map<i64, i64>,
+    pub merkle_value: Map<Vec<u8>, Vec<u8>>,
 
 //     #[dependence]
 //     pub mock2: Mock2Module<C>,
