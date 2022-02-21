@@ -7,15 +7,25 @@ edition = "2021"
 
 [dependencies]
 baseline = { path = "../baseline" }
+bs3 = { path = "../bs3" }
 
 async-trait = "0.1.52"
 futures-utils-lite = "0.1.0"
+
+sha3 = { version = "0.10", optional = true }
 
 # smol backend
 smol = { version = "1.2.5", optional = true }
 
 [features]
-default = ["smol_backend"]
-smol_backend = ["smol"]
+default = ["smol-backend", "vsdb-backend", "sha3-backend"]
 
+# Async backend
+smol-backend = ["smol"]
+
+# storage backend
+vsdb-backend = ["bs3/vsdb-backend"]
+
+# hash backend
+sha3-backend = ["sha3"]
 

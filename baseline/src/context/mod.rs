@@ -4,14 +4,13 @@ use alloc::vec::Vec;
 
 use crate::{
     prelude::{self, AsyncRuntime},
-    types::{self, Consensus, Event, Governance, Blocks, Mempool},
+    types::{self, Blocks, Consensus, Event, Governance, Mempool},
 };
 
 pub struct Context<B, D, R> {
     pub backend: B,
     marker_d: PhantomData<D>,
     async_runtime: R,
-    // marker_r: PhantomData<R>,
 
     events: Vec<Event>,
     consensus: Consensus,
@@ -65,7 +64,10 @@ where
         &self.governance
     }
 
-    fn spwan<Ret>(&self, handler: impl core::future::Future<Output = Ret>) -> Self::Task<Ret> {
+    fn spwan<Ret: Send + 'static>(
+        &self,
+        handler: impl core::future::Future<Output = Ret> + Send + 'static,
+    ) -> Self::Task<Ret> {
         self.async_runtime.spwan(handler)
     }
 
@@ -75,5 +77,35 @@ where
 
     fn mempool(&self) -> &types::Mempool {
         &self.mempool
+    }
+}
+
+impl<B, D, R> prelude::ContextMut for Context<B, D, R>
+where
+    B: bs3::backend::Backend + Send + Sync + 'static,
+    D: digest::Digest + Send + Sync + 'static,
+    R: AsyncRuntime + Send + Sync + 'static,
+{
+    fn consensus_mut(&mut self) -> &mut types::Consensus {
+        &mut self.consensus
+    }
+
+    fn governance_mut(&mut self) -> &mut types::Governance {
+        &mut self.governance
+    }
+}
+
+impl<B, D, R> prelude::ContextSetable for Context<B, D, R>
+where
+    B: bs3::backend::Backend + Send + Sync + 'static,
+    D: digest::Digest + Send + Sync + 'static,
+    R: AsyncRuntime + Send + Sync + 'static,
+{
+    fn store(&self) -> Self::Store {
+        self.backend.clone()
+    }
+
+    fn digest(&self) -> Self::Digest {
+        D::new()
     }
 }

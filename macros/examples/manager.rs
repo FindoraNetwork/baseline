@@ -63,9 +63,11 @@ impl<C: Context> MockModule<C> {
     }
 }
 
-#[baseline::manager]
+pub struct Tx {}
+
+#[baseline::manager(context = "baseline_runtime::VsDBWithSha3Context", transaction = "Tx")]
 pub struct Manager {
-    pub mock: MockModule<C>,
+    pub mock: MockModule<baseline_runtime::VsDBWithSha3Context>,
 }
 
 fn main() {}

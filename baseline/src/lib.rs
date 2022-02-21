@@ -10,7 +10,8 @@ pub mod types;
 mod error;
 pub use error::*;
 
-pub mod context;
+mod context;
+pub use context::*;
 
 mod metadata;
 pub use metadata::*;
@@ -18,5 +19,7 @@ pub use metadata::*;
 pub mod rpc;
 
 pub use bs3;
+
+pub use async_trait::async_trait;
 
 pub use baseline_macros::*;

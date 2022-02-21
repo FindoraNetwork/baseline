@@ -122,7 +122,7 @@ pub fn _main(mut input: ItemImpl) -> Result<TokenStream> {
     let ident = *input.self_ty.clone();
 
     let mut m: ItemImpl = parse_quote! {
-        #[async_trait::async_trait]
+        #[baseline::async_trait]
         impl baseline::prelude::RPC for #ident {
             async fn call(&mut self, req: baseline::types::rpc::Request) -> baseline::types::rpc::Response {
 
