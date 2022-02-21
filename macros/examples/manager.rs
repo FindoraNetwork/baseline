@@ -7,15 +7,6 @@ use baseline::{
 };
 
 #[baseline::module]
-pub struct Mock2Module<C: Context> {
-    #[context]
-    ctx: C,
-
-    #[metadata(name = "mock", version = 0, impl_version = "0.1.0", target_height = 0)]
-    pub metadata: Metadata,
-}
-
-#[baseline::module]
 pub struct MockModule<C: Context> {
     #[context]
     ctx: C,
@@ -70,6 +61,11 @@ impl<C: Context> MockModule<C> {
     pub async fn chain_id(&mut self) -> RpcResult<Vec<u8>> {
         Ok(vec![])
     }
+}
+
+#[baseline::manager]
+pub struct Manager {
+    pub mock: MockModule<C>,
 }
 
 fn main() {}

@@ -37,4 +37,3 @@ impl ValueDe for Vec<u8> {
 }
 
 impl ValueEnDe for Vec<u8> {}
-

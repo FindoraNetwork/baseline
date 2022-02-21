@@ -1,6 +1,6 @@
 use crate::{
     backend::Backend,
-    prelude::{Forkable, Model, Versionable, Merkle},
+    prelude::{Forkable, Merkle, Model, Versionable},
     BranchName, Result,
 };
 

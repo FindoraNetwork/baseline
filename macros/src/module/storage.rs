@@ -39,7 +39,8 @@ pub fn impl_storage(ty: Type, field: &mut Field, attr: Attribute) -> Result<()> 
         _ => return Err(Error::new(Span::call_site(), "Only support path and list")),
     };
 
-    let final_type = parse_quote!(baseline::bs3::Storage<#type_, #merkle_type<#ty::Digest>, #ty::Store>);
+    let final_type =
+        parse_quote!(baseline::bs3::Storage<#type_, #merkle_type<#ty::Digest>, #ty::Store>);
 
     field.ty = final_type;
 

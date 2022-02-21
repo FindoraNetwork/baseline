@@ -1,10 +1,15 @@
 use std::collections::BTreeSet;
 
-use syn::{parse_quote, Ident, Item, ItemStruct, Result, FieldValue, ItemImpl};
+use syn::{parse_quote, FieldValue, Ident, Item, ItemImpl, ItemStruct, Result};
 
 use crate::utils::generics_to_ident_list;
 
-pub fn impl_default(ctx_name: Ident, metadata: Ident, storage_names: &BTreeSet<Option<Ident>>, st: &ItemStruct) -> Result<Item> {
+pub fn impl_default(
+    ctx_name: Ident,
+    metadata: Ident,
+    storage_names: &BTreeSet<Option<Ident>>,
+    st: &ItemStruct,
+) -> Result<Item> {
     let mut field = Vec::new();
 
     for item in &st.fields {
@@ -16,8 +21,8 @@ pub fn impl_default(ctx_name: Ident, metadata: Ident, storage_names: &BTreeSet<O
             };
 
             field.push(f);
-        } else if item.ident == Some(ctx_name.clone()) {}
-        else if storage_names.contains(&item.ident) {
+        } else if item.ident == Some(ctx_name.clone()) {
+        } else if storage_names.contains(&item.ident) {
             let ident = item.ident.clone();
 
             let f: FieldValue = parse_quote! {
@@ -25,8 +30,7 @@ pub fn impl_default(ctx_name: Ident, metadata: Ident, storage_names: &BTreeSet<O
             };
 
             field.push(f);
-        }
-        else {
+        } else {
             let ident = item.ident.clone();
 
             let f: FieldValue = parse_quote! {

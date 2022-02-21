@@ -7,12 +7,12 @@ pub trait Context: Send + Sync + 'static + Clone {
 
     type Digest: digest::Digest + Send + Sync;
 
-    type Task<T>;
+    type Task<T>: core::future::Future<Output = T>;
 
     // Trigger event;
     fn emmit(&mut self, event: impl Event);
     // Spwan a new async work.
-    fn spwan<R>(&mut self, handler: impl core::future::Future<Output = R>) -> Self::Task<R>;
+    fn spwan<R>(&self, handler: impl core::future::Future<Output = R>) -> Self::Task<R>;
     // Get block info.
     fn block(&self) -> &types::Blocks;
     // Get Consensus info.

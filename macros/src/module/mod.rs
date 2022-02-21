@@ -10,7 +10,7 @@ use quote::quote;
 use syn::{parse_macro_input, Error, Fields, ItemStruct, Result};
 
 use core::panic;
-use std::{mem, collections::BTreeSet};
+use std::{collections::BTreeSet, mem};
 
 pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let mut outer_impls = Vec::new();
@@ -68,7 +68,12 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
     let ctx_name =
         ctx_name.ok_or_else(|| Error::new(Span::call_site(), "context must be defined"))?;
 
-    let _default = default::impl_default(ctx_name.clone(), metadata_name.clone(), &storage_names, &parsed)?;
+    let _default = default::impl_default(
+        ctx_name.clone(),
+        metadata_name.clone(),
+        &storage_names,
+        &parsed,
+    )?;
     let _clone = clone::impl_clone(&parsed)?;
 
     let expand = quote! {

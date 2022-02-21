@@ -1,4 +1,4 @@
-use syn::{parse_quote, Item, ItemStruct, Result, FieldValue, ItemImpl};
+use syn::{parse_quote, FieldValue, Item, ItemImpl, ItemStruct, Result};
 
 use crate::utils::generics_to_ident_list;
 
@@ -30,7 +30,7 @@ pub fn impl_clone(st: &ItemStruct) -> Result<Item> {
 
     res.generics = st.generics.clone();
 
-//     for item in res.generics.params.iter_mut() {
+    //     for item in res.generics.params.iter_mut() {
     //     if let GenericParam::Type(t) = item {
     //         if let Type::Path(p) = ctx_type {
     //             if Some(&t.ident) == p.path.get_ident() {
@@ -39,6 +39,6 @@ pub fn impl_clone(st: &ItemStruct) -> Result<Item> {
     //         }
     //     }
     // }
-//
+    //
     Ok(Item::Impl(res))
 }

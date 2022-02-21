@@ -36,4 +36,3 @@ impl KeyDe for Vec<u8> {
 }
 
 impl KeyEnDe for Vec<u8> {}
-

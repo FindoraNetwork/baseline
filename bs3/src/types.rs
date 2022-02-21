@@ -8,7 +8,6 @@ pub struct BranchName(pub Vec<u8>);
 
 impl From<&'_ str> for BranchName {
     fn from(e: &'_ str) -> Self {
-        Self (e.as_bytes().to_vec())
+        Self(e.as_bytes().to_vec())
     }
 }
-
