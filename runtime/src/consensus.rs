@@ -39,6 +39,8 @@ where
     }
 
     async fn apply_block(&self, otxs: Vec<Vec<u8>>) -> baseline::types::ExecResults {
+        // build context and set context.
+
         let mut tx_handles = Vec::new();
 
         let mut res = ExecResults::with_capacity(otxs.len());
@@ -75,6 +77,8 @@ where
         inner.apply_txs(&validate_txs).await;
 
         // TODO: Set result back.
+
+        // TODO: Sum merkle here.
 
         Default::default()
     }

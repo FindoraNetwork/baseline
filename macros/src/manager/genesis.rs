@@ -7,7 +7,9 @@ pub fn impl_genesis(st: &ItemStruct) -> Result<Item> {
     let generics_params = generics_to_ident_list(&st.generics);
 
     let mut res: ItemImpl = parse_quote! {
-        impl baseline::prelude::Genesis for #ident<#generics_params> {}
+        impl baseline::prelude::Genesis for #ident<#generics_params> {
+            // Empty impl
+        }
     };
 
     res.generics = st.generics.clone();

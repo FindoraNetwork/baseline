@@ -1,8 +1,8 @@
 use alloc::vec::Vec;
 
-pub trait Transaction: Default + Sized + Sync + Send {}
+pub trait Transaction: Default + Sync + Send {}
 
-pub trait OriginTransaction: Default + Sized + Sync + Send {}
+pub trait OriginTransaction: Default + Sync + Send {}
 
 impl Transaction for () {}
 

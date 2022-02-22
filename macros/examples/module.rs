@@ -6,15 +6,15 @@ use baseline::{
     Metadata, RpcResult,
 };
 
-#[baseline::module]
-pub struct Mock2Module<C: Context> {
-    #[context]
-    ctx: C,
-
-    #[metadata(name = "mock", version = 0, impl_version = "0.1.0", target_height = 0)]
-    pub metadata: Metadata,
-}
-
+// #[baseline::module]
+// pub struct Mock2Module<C: Context> {
+//     #[context]
+//     ctx: C,
+//
+//     #[metadata(name = "mock", version = 0, impl_version = "0.1.0", target_height = 0)]
+//     pub metadata: Metadata,
+// }
+//
 #[baseline::module]
 pub struct MockModule<C: Context> {
     #[context]

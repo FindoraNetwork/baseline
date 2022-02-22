@@ -14,9 +14,8 @@ pub fn impl_module(st: &ItemStruct, attr: &Attr) -> Result<Item> {
         impl baseline::prelude::Module for #ident<#generics_params> {
             type Context = #context_type;
 
-
             fn set_ctx(&mut self, context: Self::Context) {
-                // self.
+                // Set ctx for all module.
             }
         }
     };

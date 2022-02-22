@@ -11,15 +11,19 @@ pub trait Context: Send + Sync + 'static + Clone {
 
     // Trigger event;
     fn emmit(&mut self, event: impl Event);
+
     // Spwan a new async work.
     fn spwan<R: Send + 'static>(
         &self,
         handler: impl core::future::Future<Output = R> + Send + 'static,
     ) -> Self::Task<R>;
+
     // Get block info.
     fn block(&self) -> &types::Blocks;
+
     // Get Consensus info.
     fn consensus(&self) -> &types::Consensus;
+
     // Get Governance info.
     fn governance(&self) -> &types::Governance;
 

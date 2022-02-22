@@ -7,7 +7,15 @@ pub fn impl_block(st: &ItemStruct) -> Result<Item> {
     let generics_params = generics_to_ident_list(&st.generics);
 
     let mut res: ItemImpl = parse_quote! {
-        impl baseline::prelude::Block for #ident<#generics_params> {}
+        #[baseline::async_trait]
+        impl baseline::prelude::Block for #ident<#generics_params> {
+            async fn apply_txs(&mut self, _tx: &[Self::Transaction]) -> ExecResults
+            where
+                Self::Context: ContextMut,
+            {
+                Default::default()
+            }
+        }
     };
 
     res.generics = st.generics.clone();

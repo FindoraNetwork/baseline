@@ -1,6 +1,7 @@
 mod clone;
 mod ctx;
 mod default;
+mod defined;
 mod metadata;
 mod storage;
 
@@ -75,6 +76,7 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
         &parsed,
     )?;
     let _clone = clone::impl_clone(&parsed)?;
+    let _defined = defined::impl_defined(&parsed)?;
 
     let expand = quote! {
         #parsed
@@ -82,6 +84,8 @@ pub fn _module(mut parsed: ItemStruct) -> Result<TokenStream> {
         #_default
 
         #_clone
+
+        #_defined
 
         #(#outer_impls)*
     };
