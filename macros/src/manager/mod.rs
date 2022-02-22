@@ -1,22 +1,23 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{ItemStruct, Result, parse_macro_input};
+use syn::{parse_macro_input, punctuated::Punctuated, ItemStruct, MetaNameValue, Result, Token};
 
-mod module;
-mod manager;
-mod rpc;
-mod clone;
 mod block;
-mod mempool;
+mod clone;
+mod manager;
+mod module;
+mod rpc;
+// mod mempool;
+mod attr;
 mod genesis;
 
-pub fn _manager(st: ItemStruct) -> Result<TokenStream> {
+pub fn _manager(st: ItemStruct, arg: attr::Attr) -> Result<TokenStream> {
     let impl_manager = manager::impl_manager(&st)?;
     let impl_rpc = rpc::impl_rpc(&st)?;
-    let impl_module = module::impl_module(&st)?;
+    let impl_module = module::impl_module(&st, &arg)?;
     let impl_clone = clone::impl_clone(&st)?;
     let impl_block = block::impl_block(&st)?;
-    let impl_mempool = mempool::impl_mempool(&st)?;
+    // let impl_mempool = mempool::impl_mempool(&st)?;
     let impl_genesis = genesis::impl_genesis(&st)?;
 
     let expand = quote! {
@@ -30,7 +31,7 @@ pub fn _manager(st: ItemStruct) -> Result<TokenStream> {
 
         #impl_block
 
-        #impl_mempool
+        // #impl_mempool
 
         #impl_genesis
 
@@ -40,10 +41,18 @@ pub fn _manager(st: ItemStruct) -> Result<TokenStream> {
     Ok(expand.into())
 }
 
-pub fn manager(_args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn manager(args: TokenStream, input: TokenStream) -> TokenStream {
     let parsed = parse_macro_input!(input as ItemStruct);
 
-    match _manager(parsed) {
+    let buffer =
+        parse_macro_input!(args with Punctuated<MetaNameValue, Token![,]>::parse_terminated);
+
+    let args = match attr::Attr::from_meta(buffer) {
+        Ok(args) => args,
+        Err(e) => return e.to_compile_error().into(),
+    };
+
+    match _manager(parsed, args) {
         Ok(tk) => tk,
         Err(e) => e.to_compile_error().into(),
     }

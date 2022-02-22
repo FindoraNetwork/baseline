@@ -1,4 +1,4 @@
-use syn::{ItemStruct, Item, Result, ItemImpl, parse_quote};
+use syn::{parse_quote, Item, ItemImpl, ItemStruct, Result};
 
 use crate::utils::generics_to_ident_list;
 

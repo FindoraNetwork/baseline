@@ -8,7 +8,6 @@ pub fn impl_mempool(st: &ItemStruct) -> Result<Item> {
 
     let mut res: ItemImpl = parse_quote! {
         impl baseline::prelude::Mempool for #ident<#generics_params> {
-
         }
     };
 
