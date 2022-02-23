@@ -6,8 +6,8 @@ pub use prelude::*;
 mod runtime;
 pub use runtime::*;
 
-mod consensus;
-pub use consensus::*;
+mod app;
+pub use app::*;
 
 pub mod typedef;
 
