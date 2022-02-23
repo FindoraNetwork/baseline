@@ -1,13 +1,15 @@
 use crate::types;
 
-use super::Event;
+use super::{Event, Transaction};
 
 pub trait Context: Send + Sync + 'static + Clone {
     type Store: bs3::backend::Backend + Send + Sync;
 
     type Digest: digest::Digest + Send + Sync;
 
-    type Task<T>: core::future::Future<Output = T>;
+    type Task<Ret>: core::future::Future<Output = Ret>;
+
+    type Transaction: Transaction;
 
     // Trigger event;
     fn emmit(&mut self, event: impl Event);
@@ -27,7 +29,7 @@ pub trait Context: Send + Sync + 'static + Clone {
     // Get Governance info.
     fn governance(&self) -> &types::Governance;
 
-    fn mempool(&self) -> &types::Mempool;
+    fn mempool(&self) -> &types::Mempool<Self::Transaction>;
 }
 
 pub trait ContextMut: Context {

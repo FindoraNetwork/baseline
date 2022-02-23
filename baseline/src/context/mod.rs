@@ -3,11 +3,13 @@ use core::marker::PhantomData;
 use alloc::vec::Vec;
 
 use crate::{
-    prelude::{self, AsyncRuntime},
+    prelude::{self, AsyncRuntime, Transaction},
     types::{self, Blocks, Consensus, Event, Governance, Mempool},
 };
 
-pub struct Context<B, D, R> {
+pub struct Context<B, D, R, T>
+where T: Transaction,
+{
     pub backend: B,
     marker_d: PhantomData<D>,
     async_runtime: R,
@@ -16,14 +18,15 @@ pub struct Context<B, D, R> {
     consensus: Consensus,
     governance: Governance,
     block: Blocks,
-    mempool: Mempool,
+    mempool: Mempool<T>,
 }
 
-impl<B, D, R> Clone for Context<B, D, R>
+impl<B, D, R, T> Clone for Context<B, D, R, T>
 where
     B: bs3::backend::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime,
+    T: Transaction,
 {
     fn clone(&self) -> Self {
         Self {
@@ -40,17 +43,20 @@ where
     }
 }
 
-impl<B, D, R> prelude::Context for Context<B, D, R>
+impl<B, D, R, T> prelude::Context for Context<B, D, R, T>
 where
     B: bs3::backend::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime + Send + Sync + 'static,
+    T: Transaction,
 {
     type Store = B;
 
     type Digest = D;
 
-    type Task<T> = R::Task<T>;
+    type Task<Ret> = R::Task<Ret>;
+
+    type Transaction = T;
 
     fn emmit(&mut self, event: impl prelude::Event) {
         self.events.push(event.to_event())
@@ -75,16 +81,17 @@ where
         &self.block
     }
 
-    fn mempool(&self) -> &types::Mempool {
+    fn mempool(&self) -> &types::Mempool<T> {
         &self.mempool
     }
 }
 
-impl<B, D, R> prelude::ContextMut for Context<B, D, R>
+impl<B, D, R, T> prelude::ContextMut for Context<B, D, R, T>
 where
     B: bs3::backend::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime + Send + Sync + 'static,
+    T: Transaction,
 {
     fn consensus_mut(&mut self) -> &mut types::Consensus {
         &mut self.consensus
@@ -95,11 +102,12 @@ where
     }
 }
 
-impl<B, D, R> prelude::ContextSetable for Context<B, D, R>
+impl<B, D, R, T> prelude::ContextSetable for Context<B, D, R, T>
 where
     B: bs3::backend::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime + Send + Sync + 'static,
+    T: Transaction,
 {
     fn store(&self) -> Self::Store {
         self.backend.clone()

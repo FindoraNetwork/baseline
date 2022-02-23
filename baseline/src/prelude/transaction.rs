@@ -1,6 +1,6 @@
 use alloc::vec::Vec;
 
-pub trait Transaction: Default + Sync + Send {}
+pub trait Transaction: Default + Sync + Send + 'static + Clone {}
 
 pub trait OriginTransaction: Default + Sync + Send {}
 

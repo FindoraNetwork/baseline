@@ -12,7 +12,7 @@ pub trait Mempool: Module {
 
     type OriginTransaction: OriginTransaction + Send + 'static;
 
-    async fn check(&self, _tx: Self::Transaction) -> Result<CheckResponse> {
+    async fn check(&mut self, _tx: Self::Transaction) -> Result<CheckResponse> {
         Ok(Default::default())
     }
 

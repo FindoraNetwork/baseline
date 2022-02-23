@@ -65,13 +65,7 @@ impl<C: Context> MockModule<C> {
 
 #[baseline::manager(context = "baseline_runtime::VsDBWithSha3Context")]
 pub struct Manager {
-    pub mock: MockModule<baseline_runtime::VsDBWithSha3Context>,
-}
-
-impl Mempool for Manager {
-    type Transaction = ();
-
-    type OriginTransaction = Vec<u8>;
+    pub mock: MockModule<baseline_runtime::VsDBWithSha3Context<()>>,
 }
 
 fn main() {}

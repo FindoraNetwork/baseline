@@ -2,41 +2,34 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, punctuated::Punctuated, ItemStruct, MetaNameValue, Result, Token};
 
-mod block;
-mod clone;
-mod manager;
-mod module;
-mod rpc;
-// mod mempool;
 mod attr;
-mod genesis;
 
-pub fn _manager(st: ItemStruct, arg: attr::Attr) -> Result<TokenStream> {
-    let impl_manager = manager::impl_manager(&st)?;
-    let impl_rpc = rpc::impl_rpc(&st)?;
-    let impl_module = module::impl_module(&st, &arg)?;
-    let impl_clone = clone::impl_clone(&st)?;
-    let impl_block = block::impl_block(&st)?;
-    // let impl_mempool = mempool::impl_mempool(&st)?;
-    let impl_genesis = genesis::impl_genesis(&st)?;
-
+pub fn _manager(st: ItemStruct, _arg: attr::Attr) -> Result<TokenStream> {
+    //     let impl_manager = manager::impl_manager(&st)?;
+    // let impl_rpc = rpc::impl_rpc(&st)?;
+    // let impl_module = module::impl_module(&st, &arg)?;
+    // let impl_clone = clone::impl_clone(&st)?;
+    // let impl_block = block::impl_block(&st)?;
+    // // let impl_mempool = mempool::impl_mempool(&st)?;
+    // let impl_genesis = genesis::impl_genesis(&st)?;
+    //
     let expand = quote! {
-        #st
+            #st
 
-        #impl_clone
+            // #impl_clone
 
-        #impl_module
-
-        #impl_rpc
-
-        #impl_block
-
-        // #impl_mempool
-
-        #impl_genesis
-
-        #impl_manager
-    };
+            // #impl_module
+            //
+            // #impl_rpc
+            //
+            // #impl_block
+            //
+            // // #impl_mempool
+            //
+            // #impl_genesis
+            //
+    //         #impl_manager
+        };
 
     Ok(expand.into())
 }

@@ -9,6 +9,8 @@ edition = "2021"
 baseline = { path = "../baseline" }
 bs3 = { path = "../bs3" }
 
+log = "0.4"
+
 async-trait = "0.1.52"
 futures-utils-lite = "0.1.0"
 

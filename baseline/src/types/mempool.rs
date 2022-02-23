@@ -1,4 +1,10 @@
-#[derive(Clone)]
-pub struct Mempool {
-    // pub txs: Vec<u8>
+use alloc::collections::BTreeMap;
+
+use crate::prelude::Transaction;
+
+use super::TransactionHash;
+
+#[derive(Clone, Default)]
+pub struct Mempool<T: Transaction> {
+    pub txs: BTreeMap<TransactionHash, T>,
 }
