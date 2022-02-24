@@ -1,26 +1,27 @@
 use std::sync::Arc;
 
-use baseline::types::Block;
-use baseline_runtime::{Consensus, ConsensusCtl};
+use baseline::{prelude::Manager, types::Block};
+use baseline_runtime::{AppRuntime, Consensus, ConsensusCtl};
 
 use crate::Error;
 
-pub struct ConsensusRuntime<C: Consensus> {
-    rt: Arc<C>,
+pub struct ConsensusRuntime<M: Manager> {
+    rt: Arc<AppRuntime<M>>,
 }
 
-impl<C: Consensus> ConsensusCtl<C> for ConsensusRuntime<C> {
-    fn set_app(&mut self, c: Arc<C>) {
+impl<M: Manager> ConsensusCtl<AppRuntime<M>> for ConsensusRuntime<M> {
+    fn set_app(&mut self, c: Arc<AppRuntime<M>>) {
         self.rt = c;
     }
 }
 
-impl<C: Consensus> ConsensusRuntime<C> {
+impl<M: Manager> ConsensusRuntime<M> {
     pub fn start(&self) -> Result<(), Error> {
         Err(Error::NoStartSupport)
     }
 
     pub async fn step_block(&self, block: Block, txs: Vec<Vec<u8>>) -> Result<(), Error> {
+
         self.rt.apply_block(block, txs).await;
         Ok(())
     }

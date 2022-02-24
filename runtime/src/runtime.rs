@@ -2,7 +2,7 @@ use std::{marker::PhantomData, sync::Arc};
 
 use baseline::prelude::{ContextMut, Manager};
 
-use crate::{AppRuntime, ConsensusCtl, MempoolCtl, Mempool};
+use crate::{AppRuntime, ConsensusCtl, Mempool, MempoolCtl};
 
 pub struct Runtime<M, C, P> {
     consensus: Option<C>,
@@ -28,7 +28,6 @@ where
     P: MempoolCtl<AppRuntime<M>>,
 {
     pub fn app(&mut self, app: M) {
-
         let app = AppRuntime::new(app.clone());
 
         let arc = Arc::new(app);

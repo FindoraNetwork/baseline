@@ -3,17 +3,17 @@ use std::{collections::BTreeMap, sync::Arc};
 use async_trait::async_trait;
 use baseline::{
     prelude::{ContextMut, Manager},
-    types::{Block, BlockHeight, ExecResults, CheckResponse},
+    types::{Block, BlockHeight, CheckResponse},
 };
 
 use crate::{typedef::RwLock, Consensus, Mempool};
 
 pub struct AppRuntime<M: Manager> {
-    inner: Arc<RwLock<M>>,
-    indexs: Vec<BTreeMap<BlockHeight, usize>>,
+    pub inner: Arc<RwLock<M>>,
+    pub indexs: Vec<BTreeMap<BlockHeight, usize>>,
     // Current block.
-    block: Block,
-    mempool: baseline::types::Mempool<M::Transaction>,
+    pub block: RwLock<Block>,
+    pub mempool: baseline::types::Mempool<M::Transaction>,
 }
 impl<M> AppRuntime<M>
 where
@@ -64,9 +64,20 @@ where
 {
     async fn apply_block(
         &self,
-        _block: Block,
+        block: Block,
         _otxs: Vec<Vec<u8>>,
     ) -> baseline::types::ExecResults {
+        {
+            // Set block.
+            let mut b = self.block.write().await;
+
+            *b = block;
+        }
+
+        let context = {
+            // build context.
+        };
+
         // build context and set context.
 
         //         let mut tx_handles = Vec::new();
@@ -113,7 +124,10 @@ where
 }
 
 #[async_trait]
-impl<M> Mempool for AppRuntime<M> where M: Manager {
+impl<M> Mempool for AppRuntime<M>
+where
+    M: Manager,
+{
     async fn check(&self, _tx: Vec<u8>) -> baseline::Result<CheckResponse> {
         // insert into mempool
 

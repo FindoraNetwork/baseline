@@ -13,4 +13,3 @@ pub struct BlockParams {
     pub max_bytes: i64,
     pub max_gas: i64,
 }
-

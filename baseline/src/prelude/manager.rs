@@ -10,7 +10,7 @@ use super::{Context, ContextMut, OriginTransaction, Transaction};
 #[async_trait::async_trait]
 pub trait Manager: Send + Sync + Clone {
     // From Context
-    type Context: Context;
+    type Context: Context + ContextMut;
 
     fn set_ctx(&mut self, context: Self::Context);
 
@@ -35,11 +35,7 @@ pub trait Manager: Send + Sync + Clone {
     }
 
     // From genesis.
-    async fn genesis(&mut self, _index: usize)
-    where
-        Self::Context: ContextMut,
-    {
-    }
+    async fn genesis(&mut self, _index: usize) {}
 
     // From block.
     async fn apply_txs(&mut self, _index: usize, _tx: &[Self::Transaction]) -> ExecResults

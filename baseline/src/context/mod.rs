@@ -8,7 +8,8 @@ use crate::{
 };
 
 pub struct Context<B, D, R, T>
-where T: Transaction,
+where
+    T: Transaction,
 {
     pub backend: B,
     marker_d: PhantomData<D>,
