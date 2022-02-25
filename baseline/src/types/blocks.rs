@@ -31,4 +31,6 @@ impl Blocks {
     pub fn height(&self, _height: BlockHeight) -> Block {
         Default::default()
     }
+
+    pub fn push_block(&mut self, _block: Block) {}
 }

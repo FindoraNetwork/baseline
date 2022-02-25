@@ -1,6 +1,6 @@
 use std::{marker::PhantomData, sync::Arc};
 
-use baseline::prelude::{ContextMut, Manager};
+use baseline::prelude::{Context, ContextMut, ContextSetable, Manager};
 
 use crate::{AppRuntime, ConsensusCtl, Mempool, MempoolCtl};
 
@@ -23,12 +23,12 @@ impl<M, C, P> Default for Runtime<M, C, P> {
 impl<M, C, P> Runtime<M, C, P>
 where
     M: Manager,
-    M::Context: ContextMut,
+    M::Context: ContextMut + ContextSetable,
     C: ConsensusCtl<AppRuntime<M>>,
     P: MempoolCtl<AppRuntime<M>>,
 {
-    pub fn app(&mut self, app: M) {
-        let app = AppRuntime::new(app.clone());
+    pub fn app(&mut self, app: M, backend: <M::Context as Context>::Store) {
+        let app = AppRuntime::new(app.clone(), backend);
 
         let arc = Arc::new(app);
 

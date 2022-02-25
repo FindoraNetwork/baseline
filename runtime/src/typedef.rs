@@ -6,7 +6,7 @@ mod smol_backend {
 
     pub use smol::spawn;
 
-    #[derive(Clone)]
+    #[derive(Clone, Default)]
     pub struct SmolAsyncRuntime {}
 
     impl AsyncRuntime for SmolAsyncRuntime {

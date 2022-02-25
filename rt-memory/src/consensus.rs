@@ -21,7 +21,6 @@ impl<M: Manager> ConsensusRuntime<M> {
     }
 
     pub async fn step_block(&self, block: Block, txs: Vec<Vec<u8>>) -> Result<(), Error> {
-
         self.rt.apply_block(block, txs).await;
         Ok(())
     }

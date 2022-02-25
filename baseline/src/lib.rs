@@ -24,6 +24,8 @@ pub mod rpc;
 // Reexport crate.
 pub use bs3;
 
+pub use digest;
+
 pub use async_trait::async_trait;
 
 pub use baseline_macros::*;

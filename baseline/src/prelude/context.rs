@@ -36,10 +36,16 @@ pub trait ContextMut: Context {
     fn consensus_mut(&mut self) -> &mut types::Consensus;
 
     fn governance_mut(&mut self) -> &mut types::Governance;
+
+    fn block_mut(&mut self) -> &mut types::Blocks;
+
+    fn mempool_mut(&mut self) -> &mut types::Mempool<Self::Transaction>;
 }
 
 pub trait ContextSetable: ContextMut {
     fn store(&self) -> Self::Store;
 
     fn digest(&self) -> Self::Digest;
+
+    fn new(backend: Self::Store) -> Self;
 }

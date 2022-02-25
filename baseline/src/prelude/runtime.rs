@@ -1,4 +1,4 @@
-pub trait AsyncRuntime: Clone {
+pub trait AsyncRuntime: Clone + Default {
     type Task<T>: core::future::Future<Output = T>;
 
     // Spwan a new async work.

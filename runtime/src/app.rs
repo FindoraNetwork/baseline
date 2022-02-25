@@ -2,8 +2,9 @@ use std::{collections::BTreeMap, sync::Arc};
 
 use async_trait::async_trait;
 use baseline::{
-    prelude::{ContextMut, Manager},
+    prelude::{Context, ContextMut, ContextSetable, Manager},
     types::{Block, BlockHeight, CheckResponse},
+    digest::Digest,
 };
 
 use crate::{typedef::RwLock, Consensus, Mempool};
@@ -12,14 +13,14 @@ pub struct AppRuntime<M: Manager> {
     pub inner: Arc<RwLock<M>>,
     pub indexs: Vec<BTreeMap<BlockHeight, usize>>,
     // Current block.
-    pub block: RwLock<Block>,
-    pub mempool: baseline::types::Mempool<M::Transaction>,
+    pub context: RwLock<M::Context>,
 }
 impl<M> AppRuntime<M>
 where
     M: Manager,
+    M::Context: ContextSetable,
 {
-    pub fn new(m: M) -> Self {
+    pub fn new(m: M, backend: <M::Context as Context>::Store) -> Self {
         let modules = m.modules();
 
         let mut indexs = Vec::new();
@@ -47,11 +48,12 @@ where
 
         log::info!("Build modules stat: {:#?} ", indexs);
 
+        let context = RwLock::new(<M::Context>::new(backend));
+
         Self {
             inner,
             indexs,
-            block: Default::default(),
-            mempool: Default::default(),
+            context,
         }
     }
 }
@@ -62,20 +64,20 @@ where
     M: Manager,
     M::Context: ContextMut,
 {
-    async fn apply_block(
-        &self,
-        block: Block,
-        _otxs: Vec<Vec<u8>>,
-    ) -> baseline::types::ExecResults {
+    async fn apply_block(&self, block: Block, _otxs: Vec<Vec<u8>>) -> baseline::types::ExecResults {
         {
             // Set block.
-            let mut b = self.block.write().await;
+            let mut b = self.context.write().await;
 
-            *b = block;
+            let bb = b.block_mut();
+
+            bb.push_block(block);
         }
 
         let context = {
-            // build context.
+            let ctx = self.context.read().await;
+
+            ctx.clone()
         };
 
         // build context and set context.
@@ -128,7 +130,23 @@ impl<M> Mempool for AppRuntime<M>
 where
     M: Manager,
 {
-    async fn check(&self, _tx: Vec<u8>) -> baseline::Result<CheckResponse> {
+    async fn check(&self, tx: Vec<u8>) -> baseline::Result<CheckResponse> {
+
+        {
+            let mut mp = self.context.write().await;
+
+            let digest = <M::Context as Context>::Digest::digest(tx).to_vec();
+
+            let mempool = mp.mempool_mut();
+
+            let mut inner = self.inner.read().await;
+
+            // got inner tx.
+            // let ptx = inner.validate(0, tx).await?;
+
+            mempool.txs.insert(digest.into(), Default::default());
+        }
+
         // insert into mempool
 
         Ok(Default::default())

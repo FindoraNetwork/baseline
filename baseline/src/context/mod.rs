@@ -15,11 +15,11 @@ where
     marker_d: PhantomData<D>,
     async_runtime: R,
 
-    events: Vec<Event>,
-    consensus: Consensus,
-    governance: Governance,
-    block: Blocks,
-    mempool: Mempool<T>,
+    pub events: Vec<Event>,
+    pub consensus: Consensus,
+    pub governance: Governance,
+    pub block: Blocks,
+    pub mempool: Mempool<T>,
 }
 
 impl<B, D, R, T> Clone for Context<B, D, R, T>
@@ -101,6 +101,14 @@ where
     fn governance_mut(&mut self) -> &mut types::Governance {
         &mut self.governance
     }
+
+    fn block_mut(&mut self) -> &mut types::Blocks {
+        &mut self.block
+    }
+
+    fn mempool_mut(&mut self) -> &mut types::Mempool<Self::Transaction> {
+        &mut self.mempool
+    }
 }
 
 impl<B, D, R, T> prelude::ContextSetable for Context<B, D, R, T>
@@ -116,5 +124,18 @@ where
 
     fn digest(&self) -> Self::Digest {
         D::new()
+    }
+
+    fn new(backend: Self::Store) -> Self {
+        Self {
+            backend,
+            marker_d: PhantomData,
+            events: Vec::new(),
+            consensus: Default::default(),
+            block: Default::default(),
+            mempool: Default::default(),
+            governance: Default::default(),
+            async_runtime: Default::default(),
+        }
     }
 }
