@@ -2,124 +2,68 @@ use std::{collections::BTreeMap, sync::Arc};
 
 use async_trait::async_trait;
 use baseline::{
-    prelude::{Context, ContextMut, ContextSetable, Manager},
-    types::{Block, BlockHeight, CheckResponse},
     digest::Digest,
+    prelude::{Context, ContextMut, Manager},
+    types::Block,
 };
 
-use crate::{typedef::RwLock, Consensus, Mempool};
+use crate::{typedef::RwLock, Consensus, Mempool, ModuleCheckResponse};
 
 pub struct AppRuntime<M: Manager> {
-    pub inner: Arc<RwLock<M>>,
-    pub indexs: Vec<BTreeMap<BlockHeight, usize>>,
-    // Current block.
-    pub context: RwLock<M::Context>,
+    pub deliver_state: Arc<RwLock<M>>,
+
+    pub check_state: Arc<RwLock<M>>,
 }
+
 impl<M> AppRuntime<M>
 where
     M: Manager,
-    M::Context: ContextSetable,
 {
-    pub fn new(m: M, backend: <M::Context as Context>::Store) -> Self {
-        let modules = m.modules();
+    pub fn new(m: M) -> Self {
+        // let _modules = m.modules();
 
-        let mut indexs = Vec::new();
+        let deliver_state = Arc::new(RwLock::new(m.clone()));
+        let check_state = Arc::new(RwLock::new(m));
 
-        let mut name = String::new();
+        // TODO: Parse metadata set.
 
-        for (idx, module) in modules.into_iter().enumerate() {
-            if name != module.name {
-                let mut map = BTreeMap::new();
-
-                map.insert(module.target_height, idx);
-
-                indexs.push(map);
-            } else {
-                let index = indexs.len() - 1;
-
-                let map = &mut indexs[index];
-
-                map.insert(module.target_height, idx);
-            }
-            name = module.name;
-        }
-
-        let inner = Arc::new(RwLock::new(m));
-
-        log::info!("Build modules stat: {:#?} ", indexs);
-
-        let context = RwLock::new(<M::Context>::new(backend));
+        // log::info!("Build modules stat: {:#?} ", indexs);
 
         Self {
-            inner,
-            indexs,
-            context,
+            deliver_state,
+
+            check_state,
         }
     }
+
+    fn sync(&self) {}
 }
 
 #[async_trait]
 impl<M> Consensus for AppRuntime<M>
 where
     M: Manager,
-    M::Context: ContextMut,
 {
-    async fn apply_block(&self, block: Block, _otxs: Vec<Vec<u8>>) -> baseline::types::ExecResults {
+    async fn apply_block(
+        &self,
+        block: Block,
+        _otxs: Vec<Vec<u8>>,
+    ) -> (baseline::types::ExecResults, baseline::types::Consensus) {
         {
             // Set block.
-            let mut b = self.context.write().await;
+            let mut b = self.deliver_state.write().await;
 
-            let bb = b.block_mut();
+            let bb = b.ctx_mut().block_mut();
 
             bb.push_block(block);
         }
 
-        let context = {
-            let ctx = self.context.read().await;
-
-            ctx.clone()
-        };
-
-        // build context and set context.
-
-        //         let mut tx_handles = Vec::new();
-        //
-        // let mut res = ExecResults::with_capacity(otxs.len());
-        //
-        // for otx in otxs {
-        //     let inner = self.inner.clone();
-        //
-        //     let handler = spawn(async move {
-        //         let inn = inner.read().await;
-        //
-        //         // inn.validate(otx).await
-        //     });
-        //
-        //     tx_handles.push(handler);
-        // }
-        //
-        // let txs = zip_array(tx_handles).await;
-        //
-        // let mut validate_txs = Vec::new();
-        //
-        // for (tx, r) in txs.into_iter().zip(res.results.iter_mut()) {
-        //     match tx {
-        //         Ok(t) => {
-        //             validate_txs.push(t);
-        //         }
-        //         Err(e) => {
-        //             *r = Err(e);
-        //         }
-        //     }
-        // }
-        //
-        // let mut inner = self.inner.write().await;
-        //
-        // inner.apply_txs(&validate_txs).await;
-
         // TODO: Set result back.
 
         // TODO: Sum merkle here.
+
+        // Sync check to deliver.
+        self.sync();
 
         Default::default()
     }
@@ -130,25 +74,68 @@ impl<M> Mempool for AppRuntime<M>
 where
     M: Manager,
 {
-    async fn check(&self, tx: Vec<u8>) -> baseline::Result<CheckResponse> {
-
-        {
-            let mut mp = self.context.write().await;
-
-            let digest = <M::Context as Context>::Digest::digest(tx).to_vec();
-
-            let mempool = mp.mempool_mut();
-
-            let mut inner = self.inner.read().await;
+    async fn check(&self, tx: Vec<u8>) -> baseline::Result<ModuleCheckResponse> {
+        let (tx, txid) = {
+            let inner = self.check_state.read().await;
 
             // got inner tx.
-            // let ptx = inner.validate(0, tx).await?;
+            let ptx = inner.validate(0, &tx).await?;
 
-            mempool.txs.insert(digest.into(), Default::default());
-        }
+            let txid = <M::Context as Context>::Digest::digest(&tx).to_vec();
 
-        // insert into mempool
+            // TODO: Add to mempool?
+            // let mut mp = self.check_context.write().await;
+            //
+            // let mempool = mp.mempool_mut();
+            //
+            // mempool.txs.insert(digest.into(), ptx.clone());
 
-        Ok(Default::default())
+            (ptx, txid)
+        };
+
+        // Call check by id and version.
+        let data = {
+            let state = self.check_state.read().await;
+
+            let context = state.ctx();
+
+            let height = &context.block().height;
+
+            let pms = &context.governance().metadatas;
+
+            let mut indexs = Vec::new();
+
+            {
+                let inner = self.check_state.read().await;
+
+                for pm in pms {
+                    let idx = pm.next_height(height).expect("internal error.");
+
+                    let name = pm.name();
+
+                    indexs.push((idx, name));
+                }
+
+                for (idx, _) in &indexs {
+                    inner.check(*idx, &tx).await?;
+                }
+            }
+
+            let mut ress = BTreeMap::new();
+
+            {
+                let mut inner = self.check_state.write().await;
+
+                for (idx, name) in &indexs {
+                    let res = inner.apply_check(*idx, &tx).await?;
+
+                    ress.insert(name.to_string(), res.data);
+                }
+            }
+
+            ress
+        };
+
+        Ok(ModuleCheckResponse { txid, data })
     }
 }

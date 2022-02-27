@@ -1,8 +1,8 @@
 use alloc::vec::Vec;
 
-use crate::Metadata;
+use crate::ParsedMetadata;
 
-#[derive(Clone, Default)]
+#[derive(Clone, Debug, Default)]
 pub struct Governance {
-    pub metadatas: Vec<Metadata>,
+    pub metadatas: Vec<ParsedMetadata>,
 }

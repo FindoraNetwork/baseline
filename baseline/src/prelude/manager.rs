@@ -5,40 +5,53 @@ use crate::{
     Metadata, Result,
 };
 
-use super::{Context, ContextMut, OriginTransaction, Transaction};
+use super::{Context, ContextMut, ContextSetable};
 
 #[async_trait::async_trait]
 pub trait Manager: Send + Sync + Clone {
     // From Context
-    type Context: Context + ContextMut;
+    type Context: Context + ContextMut + ContextSetable;
 
-    fn set_ctx(&mut self, context: Self::Context);
+    fn ctx(&self) -> &Self::Context;
+
+    fn ctx_mut(&mut self) -> &mut Self::Context;
 
     // Module's metadata.
     fn modules(&self) -> Vec<Metadata>;
 
-    // From Mempool
-    type Transaction: Transaction + Send + 'static;
+    async fn check(
+        &self,
+        _index: usize,
+        _tx: &<Self::Context as Context>::Transaction,
+    ) -> Result<()> {
+        Ok(())
+    }
 
-    type OriginTransaction: OriginTransaction + Send + 'static;
-
-    async fn check(&mut self, _index: usize, _tx: Self::Transaction) -> Result<CheckResponse> {
+    async fn apply_check(
+        &mut self,
+        _index: usize,
+        _tx: &<Self::Context as Context>::Transaction,
+    ) -> Result<CheckResponse> {
         Ok(Default::default())
     }
 
     async fn validate(
         &self,
         _index: usize,
-        _tx: Self::OriginTransaction,
-    ) -> Result<Self::Transaction> {
-        Ok(Self::Transaction::default())
+        _tx: &[u8],
+    ) -> Result<<Self::Context as Context>::Transaction> {
+        Ok(Default::default())
     }
 
     // From genesis.
     async fn genesis(&mut self, _index: usize) {}
 
     // From block.
-    async fn apply_txs(&mut self, _index: usize, _tx: &[Self::Transaction]) -> ExecResults
+    async fn apply_txs(
+        &mut self,
+        _index: usize,
+        _tx: &[<Self::Context as Context>::Transaction],
+    ) -> ExecResults
     where
         Self::Context: ContextMut,
     {

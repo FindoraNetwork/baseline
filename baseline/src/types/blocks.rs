@@ -5,7 +5,7 @@ use super::{BlockHash, BlockHeight, MerkleHash, NodeAddress, Timestamp};
 #[derive(Debug, Clone, Default)]
 pub struct BlockHeader {
     pub chain_id: String,
-    pub height: i64,
+    pub height: BlockHeight,
     pub time: Option<Timestamp>,
     pub txs_hash: MerkleHash,
     pub app_hash: MerkleHash,
@@ -20,6 +20,8 @@ pub struct Block {
 
 #[derive(Debug, Clone, Default)]
 pub struct Blocks {
+    pub height: BlockHeight,
+    pub hash: BlockHash,
     // TODO: Runtime.
 }
 
@@ -28,9 +30,14 @@ impl Blocks {
         Default::default()
     }
 
-    pub fn height(&self, _height: BlockHeight) -> Block {
+    pub fn get_block_by_height(&self, _height: BlockHeight) -> Block {
         Default::default()
     }
 
-    pub fn push_block(&mut self, _block: Block) {}
+    pub fn push_block(&mut self, block: Block) {
+        self.height = block.headers.height;
+        self.hash = block.hash;
+
+        // TODO: insert into block store.
+    }
 }
