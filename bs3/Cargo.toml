@@ -13,7 +13,7 @@ digest = "0.10.2"
 vsdb = { version = "0.14", optional = true }
 
 [features]
-default = ["vsdb-backend"]
+default = []
 
 vsdb-backend = ["vsdb"]
 

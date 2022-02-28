@@ -46,16 +46,26 @@ where
 {
     async fn apply_block(
         &self,
-        block: Block,
-        _otxs: Vec<Vec<u8>>,
+        block: Block<Vec<u8>>,
     ) -> (baseline::types::ExecResults, baseline::types::Consensus) {
         {
+            // validate txs first.
+        }
+
+        {
             // Set block.
-            let mut b = self.deliver_state.write().await;
+            // let mut b = self.deliver_state.write().await;
 
-            let bb = b.ctx_mut().block_mut();
+            // let bb = b.ctx_mut().block_mut();
 
-            bb.push_block(block);
+            // bb.push_block(block);
+        }
+
+        {
+            // clear tx.
+            // for tx in &block.txs {
+
+            // }
         }
 
         // TODO: Set result back.
@@ -78,17 +88,17 @@ where
         let (tx, txid) = {
             let inner = self.check_state.read().await;
 
-            // got inner tx.
             let ptx = inner.validate(0, &tx).await?;
 
             let txid = <M::Context as Context>::Digest::digest(&tx).to_vec();
 
-            // TODO: Add to mempool?
-            // let mut mp = self.check_context.write().await;
-            //
-            // let mempool = mp.mempool_mut();
-            //
-            // mempool.txs.insert(digest.into(), ptx.clone());
+            let mut mp = self.check_state.write().await;
+
+            let ctx = mp.ctx_mut();
+
+            let mempool = ctx.mempool_mut();
+
+            mempool.txs.insert(txid.clone().into(), ptx.clone());
 
             (ptx, txid)
         };

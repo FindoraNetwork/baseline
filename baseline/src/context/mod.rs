@@ -18,7 +18,7 @@ where
     pub events: Vec<Event>,
     pub consensus: Consensus,
     pub governance: Governance,
-    pub block: Blocks,
+    pub block: Blocks<T>,
     pub mempool: Mempool<T>,
 }
 
@@ -78,7 +78,7 @@ where
         self.async_runtime.spwan(handler)
     }
 
-    fn block(&self) -> &types::Blocks {
+    fn block(&self) -> &types::Blocks<T> {
         &self.block
     }
 
@@ -102,7 +102,7 @@ where
         &mut self.governance
     }
 
-    fn block_mut(&mut self) -> &mut types::Blocks {
+    fn block_mut(&mut self) -> &mut types::Blocks<T> {
         &mut self.block
     }
 

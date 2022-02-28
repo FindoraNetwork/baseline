@@ -1,4 +1,8 @@
-use alloc::string::String;
+use core::marker::PhantomData;
+
+use alloc::{string::String, vec::Vec};
+
+use crate::prelude::Transaction;
 
 use super::{BlockHash, BlockHeight, MerkleHash, NodeAddress, Timestamp};
 
@@ -13,28 +17,29 @@ pub struct BlockHeader {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct Block {
+pub struct Block<T: Transaction> {
     pub hash: BlockHash,
     pub headers: BlockHeader,
+    pub txs: Vec<T>,
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct Blocks {
+pub struct Blocks<T: Transaction> {
     pub height: BlockHeight,
     pub hash: BlockHash,
-    // TODO: Runtime.
+    pub marker: PhantomData<T>,
 }
 
-impl Blocks {
+impl<T: Transaction> Blocks<T> {
     pub fn latest(&self) -> BlockHeight {
         Default::default()
     }
 
-    pub fn get_block_by_height(&self, _height: BlockHeight) -> Block {
+    pub fn get_block_by_height(&self, _height: BlockHeight) -> Block<T> {
         Default::default()
     }
 
-    pub fn push_block(&mut self, block: Block) {
+    pub fn push_block(&mut self, block: Block<T>) {
         self.height = block.headers.height;
         self.hash = block.hash;
 

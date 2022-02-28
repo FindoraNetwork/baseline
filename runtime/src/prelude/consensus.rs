@@ -5,7 +5,7 @@ use baseline::types::{Block, Consensus as RetConsensus, ExecResults};
 
 #[async_trait]
 pub trait Consensus: Send + Sync {
-    async fn apply_block(&self, block: Block, txs: Vec<Vec<u8>>) -> (ExecResults, RetConsensus);
+    async fn apply_block(&self, block: Block<Vec<u8>>) -> (ExecResults, RetConsensus);
 
     async fn rollback_block(&self) {}
 }

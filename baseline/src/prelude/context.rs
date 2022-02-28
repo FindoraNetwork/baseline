@@ -21,7 +21,7 @@ pub trait Context: Send + Sync + 'static + Clone {
     ) -> Self::Task<R>;
 
     // Get block info.
-    fn block(&self) -> &types::Blocks;
+    fn block(&self) -> &types::Blocks<Self::Transaction>;
 
     // Get Consensus info.
     fn consensus(&self) -> &types::Consensus;
@@ -37,7 +37,7 @@ pub trait ContextMut: Context {
 
     fn governance_mut(&mut self) -> &mut types::Governance;
 
-    fn block_mut(&mut self) -> &mut types::Blocks;
+    fn block_mut(&mut self) -> &mut types::Blocks<Self::Transaction>;
 
     fn mempool_mut(&mut self) -> &mut types::Mempool<Self::Transaction>;
 }
