@@ -3,7 +3,8 @@ members = [
     "baseline",
     "macros",
     "runtime",
-    "bs3",
+    "bs3/bs3",
+    "bs3/bs3vsdb",
     "rt-tendermint",
     "rt-memory",
 ]

@@ -2,8 +2,6 @@
 
 extern crate alloc;
 
-pub mod backend;
-
 mod value;
 pub use value::*;
 

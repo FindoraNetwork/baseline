@@ -1,11 +1,6 @@
-use crate::{
-    prelude::{Forkable, Versionable},
-    BranchName, Error, Result,
-};
-use alloc::{format, vec::Vec};
+use bs3::{BranchName, prelude::{Backend, VersionedBackend, Forkable, Versionable}, Error, Result};
 use vsdb::{MapxOrdVs, VsMgmt};
 
-use super::{Backend, VersionedBackend};
 
 #[derive(Clone)]
 pub struct VsDbBackend {

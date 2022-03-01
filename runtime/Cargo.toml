@@ -7,7 +7,6 @@ edition = "2021"
 
 [dependencies]
 baseline = { path = "../baseline", version = "0.1.0" }
-bs3 = { path = "../bs3" }
 
 log = "0.4"
 
@@ -19,6 +18,8 @@ sha3 = { version = "0.10", optional = true }
 # smol backend
 smol = { version = "1.2.5", optional = true }
 
+bs3vsdb = { version = "0.1", path = "../bs3/bs3vsdb" }
+
 [features]
 default = ["smol-backend", "vsdb-backend", "sha3-backend"]
 
@@ -26,7 +27,7 @@ default = ["smol-backend", "vsdb-backend", "sha3-backend"]
 smol-backend = ["smol"]
 
 # storage backend
-vsdb-backend = ["bs3/vsdb-backend"]
+vsdb-backend = []
 
 # hash backend
 sha3-backend = ["sha3"]

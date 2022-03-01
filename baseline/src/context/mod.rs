@@ -24,7 +24,7 @@ where
 
 impl<B, D, R, T> Clone for Context<B, D, R, T>
 where
-    B: bs3::backend::Backend + Send + Sync + 'static,
+    B: bs3::prelude::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime,
     T: Transaction,
@@ -46,7 +46,7 @@ where
 
 impl<B, D, R, T> prelude::Context for Context<B, D, R, T>
 where
-    B: bs3::backend::Backend + Send + Sync + 'static,
+    B: bs3::prelude::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime + Send + Sync + 'static,
     T: Transaction,
@@ -89,7 +89,7 @@ where
 
 impl<B, D, R, T> prelude::ContextMut for Context<B, D, R, T>
 where
-    B: bs3::backend::Backend + Send + Sync + 'static,
+    B: bs3::prelude::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime + Send + Sync + 'static,
     T: Transaction,
@@ -113,7 +113,7 @@ where
 
 impl<B, D, R, T> prelude::ContextSetable for Context<B, D, R, T>
 where
-    B: bs3::backend::Backend + Send + Sync + 'static,
+    B: bs3::prelude::Backend + Send + Sync + 'static,
     D: digest::Digest + Send + Sync + 'static,
     R: AsyncRuntime + Send + Sync + 'static,
     T: Transaction,
