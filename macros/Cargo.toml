@@ -13,8 +13,3 @@ quote = "1.0"
 syn = { version = "1.0", features = ['full', 'extra-traits', "parsing"] }
 proc-macro2 = "1.0"
 
-[dev-dependencies]
-baseline = { path = "../baseline" }
-async-trait = "0.1.52"
-baseline-runtime = { path = "../runtime/runtime" }
-
