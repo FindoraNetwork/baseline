@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-baseline = { path = "../baseline", version = "0.1.0" }
+baseline = { path = "../../baseline", version = "0.1.0" }
 
 log = "0.4"
 
@@ -18,7 +18,7 @@ sha3 = { version = "0.10", optional = true }
 # smol backend
 smol = { version = "1.2.5", optional = true }
 
-bs3vsdb = { version = "0.1", path = "../bs3/bs3vsdb" }
+bs3vsdb = { version = "0.1", path = "../../bs3/bs3vsdb", optional = true }
 
 [features]
 default = ["smol-backend", "vsdb-backend", "sha3-backend"]
@@ -27,7 +27,7 @@ default = ["smol-backend", "vsdb-backend", "sha3-backend"]
 smol-backend = ["smol"]
 
 # storage backend
-vsdb-backend = []
+vsdb-backend = ["bs3vsdb"]
 
 # hash backend
 sha3-backend = ["sha3"]
